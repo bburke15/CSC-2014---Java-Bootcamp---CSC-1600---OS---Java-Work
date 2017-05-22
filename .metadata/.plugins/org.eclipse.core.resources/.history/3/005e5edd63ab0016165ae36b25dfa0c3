@@ -1,0 +1,225 @@
+import java.awt.BorderLayout;
+import java.awt.Insets;
+import java.awt.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.swing.*;
+
+// PushButtonDemo shows how to respond to button press actions by
+// making "this" class an ActionListener.
+public class lab7 implements ActionListener
+{
+	// Declare some class variables (or attributes)
+	// that are accessible in any of the methods below
+	JFrame frame;
+	//JTextField textField;
+	JButton newButton;
+	JTextArea textArea;
+	JTextArea ReadME;
+	JTextArea Size;
+	JFileChooser fc = new JFileChooser();
+	
+	public lab7()
+	{
+		// Declare a push button
+		/*button = new JButton("DO NOT PUSH THIS BUTTON");
+		
+		// Add this class to the button as a listener
+		button.addActionListener(this);*/
+		
+		// Create another button and add the listener
+		newButton = new JButton("Pick a text file to analyze");
+		newButton.addActionListener(this);
+		
+		// Create a text field, and set it's width
+		//textField = new JTextField("This is some text", 50);
+		
+		textArea = new JTextArea();
+		JScrollPane scrollPane = new JScrollPane(textArea); 
+		textArea.setEditable(false);
+		textArea.setLineWrap(true);
+		textArea.setMargin(new Insets(10,10,10,10));
+		
+		ReadME = new JTextArea();
+		JScrollPane scrolling = new JScrollPane(ReadME); 
+		ReadME.setEditable(false);
+		ReadME.setLineWrap(true);
+		ReadME.setMargin(new Insets(50,50,50,50));
+		
+		Size = new JTextArea();
+		Size.setEditable(false);
+		Size.setLineWrap(true);
+		Size.setMargin(new Insets(10,10,10,10));
+		// Create a panel (container) and add stuff to it
+		JPanel panel = new JPanel();
+		//panel.add(textField);
+		//panel.add(button);
+		panel.add(newButton);
+		panel.add(scrollPane);
+		panel.add(scrolling);
+	
+		// Create the application frame
+		frame = new JFrame("Lab 7 Text Analyzer");
+		frame.setLayout(new BorderLayout());
+		JPanel statusPanel = new JPanel();
+		frame.add(statusPanel, BorderLayout.SOUTH);
+		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
+		
+		JLabel statusLabel = new JLabel("status");
+		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		statusPanel.add(statusLabel);
+
+		frame.setVisible(true);
+		
+		// Set what you want to happen with the X button is clicked
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		// Add the panel to the "content pane" of the frame
+		frame.getContentPane().add(panel, BorderLayout.CENTER);
+		
+		// Pack the stuff on the frame together
+		frame.pack();
+		
+		// Set the original size of the frame when it displays
+		frame.setSize(500,  500);
+		
+		// Show the frame on the screen
+		frame.setVisible(true);
+	}
+	
+	public String readTextFile(File file)
+	{
+		try 
+		{
+			BufferedReader br = new BufferedReader(new FileReader(file));
+		    StringBuilder sb = new StringBuilder();
+		    String line = br.readLine();
+
+		    while (line != null) {
+		        sb.append(line);
+		        sb.append(System.lineSeparator());
+		        line = br.readLine();
+		    }
+		    String everything = sb.toString();
+		    br.close();
+		    return everything;
+		}
+		catch (Exception ex)
+		{
+			System.out.println("Something bad happened: "+ex);
+		}
+		return null;
+	}
+	
+	public String[] breakTextIntoWords(String text)
+	{
+		ArrayList<String> myList = new ArrayList<String>();
+		Pattern pattern = Pattern.compile("\\w+");
+		Matcher matcher = pattern.matcher(text);
+		while (matcher.find())
+		{
+			String word = matcher.group();
+			word = word.toLowerCase();
+		    myList.add(word);
+		}
+		return myList.toArray(new String[myList.size()]);
+	}
+
+	// Main method
+	public static void main(String[] args)
+	{
+		// Instantiate the class
+		lab7 demo = new lab7();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) //throws IOException
+	{
+		// Print out something about the event that happened
+		// so we can see the "source" of the action
+		System.out.println(arg0.getSource());
+		
+		// Get the text from the text field and first button
+		//String message = textField.getText();
+		String newbuttonText = newButton.getText();
+		
+		// Compare the text of the first button with the
+		// "action command" which is the text of whatever
+		// caused the action
+		if (arg0.getActionCommand() == newButton.getText())
+		{
+			// Pop open a file chooser
+			int returnVal = fc.showOpenDialog(frame);
+			
+			// See if the user clicked the "open" button
+			if (returnVal == JFileChooser.APPROVE_OPTION) 
+			{
+				// Which file did they pick?
+		        File file = fc.getSelectedFile();
+		        int size = (int)file.length();
+		        //String large = size.toString();
+		        //Size.setText(new String(size));
+		        // Do something with that file
+		        //System.out.println(file.getPath());
+		        String text = this.readTextFile(file);
+		        String name = file.toString() ;
+		        textArea.setText(name);
+		        ReadME.setText(text);
+		        
+
+		}		
+	}
+
+}
+}
+
+/*String[] wordlist = breakTextIntoWords(text);
+for (int i=0; i<wordlist.length; i++)
+  {
+	System.out.println(wordlist[i]);
+  }
+String content = new Scanner(file).useDelimiter("\\Z").next();
+int upper = 0;
+int lower = 0;
+char current;   // the current character being processed
+int other = 0;  // counter for non-alphabetics
+//  Count the number of each letter occurrence
+for (int ch = 0; ch < content.length(); ch++)
+{
+	current = content.charAt(ch);
+	if (current >= 'A' && current <= 'Z')
+		upper++;
+	else
+		if (current >= 'a' && current <= 'z')
+			lower++;
+		else
+			other++;
+}
+int numChar = upper + lower;
+Scanner input = new Scanner(file); 
+int countWords = 0;
+while (input.hasNext()) {
+    //goes to each next word
+    String word = input.next();
+    //counts each word
+    countWords++;
+}
+JOptionPane.showMessageDialog(frame, countWords);
+}
+else
+{
+// They didn't press the "Open" button
+System.out.println("you didn't pick a file");
+}*/

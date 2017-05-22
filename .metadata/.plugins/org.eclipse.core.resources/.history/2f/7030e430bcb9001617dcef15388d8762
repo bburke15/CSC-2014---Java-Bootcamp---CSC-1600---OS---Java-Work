@@ -1,0 +1,62 @@
+import java.util.Arrays;
+
+public class schedulingAlgs {
+	
+	public void do_FCFS(int[] anArray, int set){
+		int arm_start = 500;
+		int[] distance = new int[12];
+		int dist_1 = Math.abs(arm_start - anArray[0]);
+		int Total = 0;
+		System.out.printf("Set %d FCFS %n",set);
+		System.out.print("Cylinders \t");
+		for(int i=0; i<anArray.length;i++){	
+			System.out.printf("%d %t",anArray[i]);
+		}
+		distance[0] = dist_1;
+		for(int i=1; i<anArray.length;i++){
+			distance[i] = anArray[i] - anArray[i-1];
+		}
+		System.out.printf("%nDistance %t%d%t",dist_1);
+		for(int i=0; i<anArray.length;i++){
+			System.out.printf("%d %t",distance[i]);
+			Total = Total + distance[i];
+		}
+		System.out.printf("%d", Total);
+	}
+	
+	public void do_SSF(int[] anArray, int set){
+		int arm_start = 500;
+		int[] distance = new int[12];
+		int Total = 0;
+		int closest;
+		System.out.printf("Set %d SSF %n",set);
+		System.out.print("Cylinders \t");
+		for(int i=0; i<anArray.length;i++){	
+			System.out.printf("%d %t",anArray[i]);
+		}
+		closest = Math.abs(arm_start - anArray[0]);
+		for(int i=0; i<distance.length;i++ ){
+			for(int j=0; j<distance.length;i++){
+				int temp = Math.abs(anArray[j+1]-anArray[j]);
+				if(temp<closest){
+				closest = temp;
+				}
+			distance[i] = closest;
+			}
+		}
+		for(int i=0; i<distance.length;i++){
+			System.out.printf("%d %t",distance[i]);
+			Total = Total + distance[i];
+		}
+		System.out.printf("%d", Total);
+	}
+	
+	public void do_Elevator(int[] anArray, int set){
+		int arm_start = 500;
+		Arrays.sort(anArray); //sort array elements in ascending order
+	}
+
+	
+	
+
+}
